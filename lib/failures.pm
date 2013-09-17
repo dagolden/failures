@@ -9,8 +9,12 @@ package failures;
 sub import {
     my ( $class, @failures ) = @_;
     for my $f (@failures) {
-        no strict 'refs';
-        @{"failure::$f\::ISA"} = 'failure';
+        my $fragment = 'failure';
+        for my $p ( split /::/, $f ) {
+            no strict 'refs';
+            @{"$fragment\::$p\::ISA"} = $fragment;
+            $fragment .= "::$p";
+        }
     }
 }
 
