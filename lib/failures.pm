@@ -32,18 +32,24 @@ sub throw {
 }
 
 sub message {
-    my ( $self, $type, $msg ) = @_;
-    my $string = "Failed: $type error";
-    $string .= ": $msg" if defined $msg && length $msg;
-    return $string;
+    my $msg = $_[0]->{msg};
+    return ( defined $msg && length $msg ? $msg : '' );
+}
+
+sub trace {
+    my $trace = $_[0]->{trace};
+    return ( defined $trace && length $trace ? $trace : '' );
 }
 
 sub as_string {
     my ($self) = @_;
-    ( my $class = ref $self ) =~ s/^failure:://;
-    my $msg = $self->message( $class, $self->{msg} );
-    $msg .= "\n\n@{[$self->{trace}]}" if defined $self->{trace};
-    return $msg;
+    ( my $type = ref $self ) =~ s/^failure:://;
+    my ( $string, $msg, $trace ) =
+      ( "Failed: $type error", $self->message, $self->trace );
+    $string .= ": $msg"     if length $msg;
+    $string .= "\n\n$trace" if length $trace;
+    $string .= "\n";
+    return $string;
 }
 
 sub line_trace {

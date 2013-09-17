@@ -28,13 +28,13 @@ subtest 'stringification' => sub {
     my $err;
     eval { failure::vogon::jeltz->throw };
     ok( $err = $@, 'caught thrown error (no message)' );
-    is( "$err", "Failed: vogon::jeltz error", "stringification (no message)" );
+    is( "$err", "Failed: vogon::jeltz error\n", "stringification (no message)" );
 
     eval { failure::vogon::jeltz->throw("bypass over budget") };
     ok( $err = $@, 'caught thrown error (string message)' );
     is(
         "$err",
-        "Failed: vogon::jeltz error: bypass over budget",
+        "Failed: vogon::jeltz error: bypass over budget\n",
         "stringification (string message)"
     );
 
@@ -42,7 +42,7 @@ subtest 'stringification' => sub {
     ok( $err = $@, 'caught thrown error (message in hashref)' );
     is(
         "$err",
-        "Failed: vogon::jeltz error: bypass over budget",
+        "Failed: vogon::jeltz error: bypass over budget\n",
         "stringification (message in hashref)"
     );
 };
@@ -53,7 +53,7 @@ subtest 'trace' => sub {
     ok( $err = $@, 'caught thrown error (with line trace)' );
     like(
         "$err",
-        qr/Failed: vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+/,
+        qr/Failed: vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+\n/,
         "stringification with line trace"
     );
 
@@ -61,7 +61,7 @@ subtest 'trace' => sub {
     ok( $err = $@, 'caught thrown error (with trace)' );
     is(
         "$err",
-        "Failed: vogon::jeltz error\n\nSTACK TRACE",
+        "Failed: vogon::jeltz error\n\nSTACK TRACE\n",
         "stringification with (fake) stack trace"
     );
 };
