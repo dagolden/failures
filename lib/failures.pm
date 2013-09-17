@@ -26,21 +26,21 @@ use overload (
 );
 
 sub throw {
-    my ( $invocant, $arg ) = @_;
-    die( ref $invocant ? $invocant : bless( { arg => $arg }, $invocant ) );
+    my ( $invocant, $msg ) = @_;
+    die( ref $invocant ? $invocant : bless( { msg => $msg }, $invocant ) );
 }
 
 sub message {
-    my ( $self, $type, $arg ) = @_;
-    my $msg = "Failed: $type error";
-    $msg .= ": $arg" if defined $arg && length $arg;
-    return $msg;
+    my ( $self, $type, $msg ) = @_;
+    my $string = "Failed: $type error";
+    $string .= ": $msg" if defined $msg && length $msg;
+    return $string;
 }
 
 sub as_string {
     my ($self) = @_;
     ( my $class = ref $self ) =~ s/^failure:://;
-    return $self->message( $class, $self->{arg} );
+    return $self->message( $class, $self->{msg} );
 }
 
 1;
