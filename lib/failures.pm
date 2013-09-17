@@ -22,8 +22,7 @@ package failure;
 
 sub throw {
     my ($invocant) = @_;
-    my $obj = bless {}, ref $invocant || $invocant;
-    die $obj;
+    die( ref $invocant ? $invocant : bless( {}, $invocant ) );
 }
 
 1;
