@@ -12,9 +12,12 @@ on 'test' => sub {
   requires "IO::Handle" => "0";
   requires "IPC::Open3" => "0";
   requires "List::Util" => "0";
-  requires "Test::FailWarnings" => "0";
   requires "Test::More" => "0.96";
   requires "lib" => "0";
+};
+
+on 'test' => sub {
+  recommends "Test::FailWarnings" => "0.007";
 };
 
 on 'configure' => sub {
