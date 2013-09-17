@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 package failures;
-# ABSTRACT: No abstract given for failures
+# ABSTRACT: Minimalist exception hierarchy generator
 # VERSION
 
 sub import {
@@ -48,25 +48,98 @@ sub as_string {
 
 1;
 
-=for Pod::Coverage BUILD
+=for Pod::Coverage throw message as_string
 
 =head1 SYNOPSIS
 
-    use failures;
+    use failures qw/io::file io::network/;
+    use Try::Tiny;
+
+    try {
+        process_file or
+            failure::io::file->throw("oops, something bad happened: $!");
+    }
+    catch {
+        if   ( $_->isa("failure::io::file") ) {
+            ...
+        }
+        elsif( $_->isa("failure::io") ) {
+            ...
+        }
+    }
 
 =head1 DESCRIPTION
 
-This module might be cool, but you'd never know it from the lack
-of documentation.
+This module lets you define an exception hierarchy with very little code.
 
 =head1 USAGE
 
-Good luck!
+=head2 Defining failure categories
+
+    use failures qw/foo::bar foo::baz/;
+
+This will define the following failure classes:
+
+=for :list
+* failure
+* failure::foo
+* failure::foo::bar
+* failure::foo::baz
+
+Subclasses inherit, so C<failure::foo::bar> C<isa> C<failure::foo> and C<isa>
+C<failure>.
+
+=head2 Throwing failures
+
+The C<throw> method of a failure class takes a single, optional argument
+that modifies how failure objects are stringified.
+
+If no argument is given, a default message is generated:
+
+    say failure::foo::bar->throw;
+    # Failed: foo::bar error
+
+With a single, non-hash-reference argument, the argument is appended as a string:
+
+    say failure::foo::bar->throw("Ouch!");
+    # Failed: foo::bar error: Ouch!
+
+With a hash reference argument, the C<msg> key provides the string to append
+to the default error.  If an optional C<trace> key is provided, it is appended
+as a string.
+
+    failure::foo::bar->throw({
+        msg => "Ouch!",
+        trace => Devel::StackTrace->new,
+    });
+
+    # Failed: foo::bar error: Ouch!
+    # 
+    # [stringified Devel::StackTrace object]
+
+=head2 Catching failures
+
+Use L<Try::Tiny>, of course.  Within a catch block, you know that C<$_>
+is defined, so you can test with C<isa>.
+
+    try { ... }
+    catch {
+        if ( $_->isa("failure::foo") ) {
+            # handle it
+        }
+    };
 
 =head1 SEE ALSO
 
+There is no shortage of error/exception systems on CPAN.  This one is
+designed to be minimalist.
+
+Others you might (or might not) want to explore include:
+
 =for :list
-* Maybe other modules do related things.
+* L<Throwable::X> — for Moo/Moose classes
+* L<Exception::Class> -- for non-Moo/Moose classes
+* ...[more to come]...
 
 =cut
 
