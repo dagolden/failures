@@ -29,6 +29,14 @@ subtest 'stringification' => sub {
     eval { failure::vogon::jeltz->throw };
     ok( $err = $@, 'caught thrown error (no message)' );
     is( "$err", "Failed: vogon::jeltz error", "stringification (no message)" );
+
+    eval { failure::vogon::jeltz->throw("bypass over budget") };
+    ok( $err = $@, 'caught thrown error (string message)' );
+    is(
+        "$err",
+        "Failed: vogon::jeltz error: bypass over budget",
+        "stringification (string message)"
+    );
 };
 
 done_testing;
