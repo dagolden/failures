@@ -104,7 +104,7 @@ Here were my design goals:
 
 =for :list
 * minimalist interface
-* 80% of features in 20% SLOC
+* 80% of features in 20% of lines of code
 * depend only on core modules
 * support hierarchical error types
 * identify errors types by name (class) not by parsing strings
@@ -208,7 +208,7 @@ There is no shortage of error/exception systems on CPAN.  This one is
 designed to be minimalist.
 
 If you have more complex or substantial needs, these modules are the ones
-that I know have a good repuation:
+that I know have a good reputation:
 
 =for :list
 * L<Throwable::X> — for Moo/Moose classes
@@ -223,7 +223,7 @@ needs or didn't suit my taste:
 * L<Exception::Base> — seemed a bit complex, but highly optimized for speed
 * L<Exception::Simple> — very simple, but always uses C<caller> and has no hierarchy
 * L<Exception::Tiny> — not bad, but always uses C<caller> and setting up a hierarchy requires extra work
-* L<Ouch> — simple, well-thought out, but no hierarchy; also cutsy function names
+* L<Ouch> — simple, well-thought out, but no hierarchy; also cutesy function names
 
 Here are some more that I'm very dubious about:
 
