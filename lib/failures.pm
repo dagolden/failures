@@ -100,6 +100,16 @@ for my $fn (qw/croak_trace confess_trace/) {
 
 This module lets you define an exception hierarchy with very little code.
 
+Here were my design goals:
+
+=for :list
+* minimalist interface
+* 80% of features in 20% SLOC
+* depend only on core modules
+* support hierarchical error types
+* identify errors types by name (class) not by parsing strings
+* defer (possibly expensive) trace decisions to caller
+
 =head1 USAGE
 
 =head2 Defining failure categories
@@ -147,7 +157,7 @@ number, use the C<< failure->line_trace >> class method:
     # Failure caught at <FILENAME> line <NUMBER>
 
 To provide a trace just like the L<Carp> module (including respecting C<@CARP_NOT>)
-use the C<croak_trace> or C<confess_trace> class methods.
+use the C<croak_trace> or C<confess_trace> class methods:
 
     failure::foo::bar->throw({
         msg => "Ouch!",
@@ -197,13 +207,31 @@ is defined, so you can test with C<isa>.
 There is no shortage of error/exception systems on CPAN.  This one is
 designed to be minimalist.
 
-If you have more complex or substantial needs, you might (or might not) want to
-explore include:
+If you have more complex or substantial needs, these modules are the ones
+that I know have a good repuation:
 
 =for :list
 * L<Throwable::X> — for Moo/Moose classes
 * L<Exception::Class> -- for non-Moo/Moose classes
-* … more to come …
+
+Here are some others that I found that weren't appropriate for my
+needs or didn't suit my taste:
+
+=for :list
+* L<Class::Throwable> — no hierarchy and always builds a full stack trace
+* L<Error::Tiny> — blends Try::Tiny and a trivial exception base class
+* L<Exception::Base> — seemed a bit complex, but highly optimized for speed
+* L<Exception::Simple> — very simple, but always uses C<caller> and has no hierarchy
+* L<Exception::Tiny> — not bad, but always uses C<caller> and setting up a hierarchy requires extra work
+* L<Ouch> — simple, well-thought out, but no hierarchy; also cutsy function names
+
+Here are some more that I'm very dubious about:
+
+=for :list
+* L<Err> — alpha since 2012
+* L<Error> — no longer recommended by maintainer
+* L<errors> — "still under design" since 2009
+* L<Exception> — dates back to 1996 and undocumented
 
 =cut
 
