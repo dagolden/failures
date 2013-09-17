@@ -49,12 +49,20 @@ subtest 'stringification' => sub {
 
 subtest 'trace' => sub {
     my $err;
+    eval { failure::vogon::jeltz->throw( { trace => failure->line_trace } ) };
+    ok( $err = $@, 'caught thrown error (with line trace)' );
+    like(
+        "$err",
+        qr/Failed: vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+/,
+        "stringification with line trace"
+    );
+
     eval { failure::vogon::jeltz->throw( { trace => 'STACK TRACE' } ) };
     ok( $err = $@, 'caught thrown error (with trace)' );
     is(
         "$err",
         "Failed: vogon::jeltz error\n\nSTACK TRACE",
-        "stringification with stack trace"
+        "stringification with (fake) stack trace"
     );
 };
 

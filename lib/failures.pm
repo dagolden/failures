@@ -46,6 +46,12 @@ sub as_string {
     return $msg;
 }
 
+sub line_trace {
+    my ($self) = @_;
+    my ( $package, $filename, $line ) = caller(0);
+    return "Failure caught at $filename line $line";
+}
+
 1;
 
 =for Pod::Coverage throw message as_string
@@ -114,10 +120,22 @@ as a string.
     });
 
     # Failed: foo::bar error: Ouch!
-    # 
+    #
     # [stringified Devel::StackTrace object]
 
-=head2 Catching failures
+To vaguely emulate C<die> and provide a simple filename and line number,
+use the C<failure->line_trace> method:
+
+    failure::foo::bar->throw({
+        msg => "Ouch!",
+        trace => failure->line_trace,
+    });
+
+    # Failed: foo::bar error: Ouch!
+    #
+    # Failure caught at <FILENAME> line <NUMBER>
+
+=head2 Catching and failures
 
 Use L<Try::Tiny>, of course.  Within a catch block, you know that C<$_>
 is defined, so you can test with C<isa>.
