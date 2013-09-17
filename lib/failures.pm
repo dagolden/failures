@@ -26,8 +26,9 @@ use overload (
 );
 
 sub throw {
-    my ( $invocant, $msg ) = @_;
-    die( ref $invocant ? $invocant : bless( { msg => $msg }, $invocant ) );
+    my ( $class, $msg ) = @_;
+    my $self = ref $msg eq 'HASH' ? {%$msg} : { msg => $msg };
+    die( bless( $self, $class ) );
 }
 
 sub message {
@@ -40,7 +41,9 @@ sub message {
 sub as_string {
     my ($self) = @_;
     ( my $class = ref $self ) =~ s/^failure:://;
-    return $self->message( $class, $self->{msg} );
+    my $msg = $self->message( $class, $self->{msg} );
+    $msg .= "\n\n@{[$self->{trace}]}" if defined $self->{trace};
+    return $msg;
 }
 
 1;

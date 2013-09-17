@@ -37,6 +37,25 @@ subtest 'stringification' => sub {
         "Failed: vogon::jeltz error: bypass over budget",
         "stringification (string message)"
     );
+
+    eval { failure::vogon::jeltz->throw( { msg => "bypass over budget" } ) };
+    ok( $err = $@, 'caught thrown error (message in hashref)' );
+    is(
+        "$err",
+        "Failed: vogon::jeltz error: bypass over budget",
+        "stringification (message in hashref)"
+    );
+};
+
+subtest 'trace' => sub {
+    my $err;
+    eval { failure::vogon::jeltz->throw( { trace => 'STACK TRACE' } ) };
+    ok( $err = $@, 'caught thrown error (with trace)' );
+    is(
+        "$err",
+        "Failed: vogon::jeltz error\n\nSTACK TRACE",
+        "stringification with stack trace"
+    );
 };
 
 done_testing;
