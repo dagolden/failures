@@ -1,9 +1,11 @@
+requires "Carp" => "0";
 requires "overload" => "0";
 requires "perl" => "5.008001";
 requires "strict" => "0";
 requires "warnings" => "0";
 
 on 'test' => sub {
+  requires "Exporter" => "0";
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec::Functions" => "0";
   requires "File::Temp" => "0";
@@ -12,6 +14,7 @@ on 'test' => sub {
   requires "List::Util" => "0";
   requires "Test::FailWarnings" => "0";
   requires "Test::More" => "0.96";
+  requires "lib" => "0";
 };
 
 on 'configure' => sub {

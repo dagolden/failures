@@ -4,6 +4,9 @@ use warnings;
 use Test::More 0.96;
 use Test::FailWarnings;
 
+use lib 't/lib';
+use TestThrower;
+
 use failures qw/vogon vogon::jeltz human::arthur/;
 
 subtest 'throw unnested failure' => sub {
@@ -49,20 +52,36 @@ subtest 'stringification' => sub {
 
 subtest 'trace' => sub {
     my $err;
-    eval { failure::vogon::jeltz->throw( { trace => failure->line_trace } ) };
-    ok( $err = $@, 'caught thrown error (with line trace)' );
-    like(
-        "$err",
-        qr/Failed: vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+\n/,
-        "stringification with line trace"
-    );
-
     eval { failure::vogon::jeltz->throw( { trace => 'STACK TRACE' } ) };
     ok( $err = $@, 'caught thrown error (with trace)' );
     is(
         "$err",
         "Failed: vogon::jeltz error\n\nSTACK TRACE\n",
         "stringification with (fake) stack trace"
+    );
+
+    eval { failure::vogon::jeltz->throw( { trace => failure->line_trace } ) };
+    ok( $err = $@, 'caught thrown error (with line trace)' );
+    like(
+        "$err",
+        qr/Failed: vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+\.\n/,
+        "stringification with line trace"
+    );
+
+    eval { deep_throw( 'failure::vogon::jeltz', "Ouch!", 'croak_trace' ) };
+    ok( $err = $@, 'caught thrown error (with croak trace)' );
+    like(
+        "$err",
+        qr/Failed: vogon::jeltz error: Ouch!\n\nFailure caught at t\/basic\.t line \d+\.\n/,
+        "stringification with croak trace"
+    );
+
+    eval { deep_throw( 'failure::vogon::jeltz', "Ouch!", 'confess_trace' ) };
+    ok( $err = $@, 'caught thrown error (with confess trace)' );
+    like(
+        "$err",
+        qr/Failed: vogon::jeltz error: Ouch!\n\nFailure caught at t\/lib\/TestThrower\.pm line \d+\.\n\s+Baz::baz/,
+        "stringification with croak trace"
     );
 };
 

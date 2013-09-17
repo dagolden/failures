@@ -53,9 +53,19 @@ sub as_string {
 }
 
 sub line_trace {
-    my ($self) = @_;
     my ( $package, $filename, $line ) = caller(0);
-    return "Failure caught at $filename line $line";
+    return "Failure caught at $filename line $line.";
+}
+
+for my $fn (qw/croak_trace confess_trace/) {
+    no strict 'refs';
+    *{$fn} = sub {
+        require Carp;
+        local @failure::CARP_NOT = ( scalar caller );
+        my $trace = $fn eq 'croak_trace' ? Carp::shortmess('') : Carp::longmess('');
+        chomp $trace;
+        return "Failure caught$trace";
+    };
 }
 
 1;
@@ -122,21 +132,10 @@ With a single, non-hash-reference argument, the argument is appended as a string
     say failure::foo::bar->throw("Ouch!");
     # Failed: foo::bar error: Ouch!
 
-With a hash reference argument, the C<msg> key provides the string to append
-to the default error.  If an optional C<trace> key is provided, it is appended
-as a string.
-
-    failure::foo::bar->throw({
-        msg => "Ouch!",
-        trace => Devel::StackTrace->new,
-    });
-
-    # Failed: foo::bar error: Ouch!
-    #
-    # [stringified Devel::StackTrace object]
-
-To vaguely emulate C<die> and provide a simple filename and line number,
-use the C<< failure->line_trace >> class method:
+With a hash reference argument, the C<msg> key provides the string to append to
+the default error.  If an optional C<trace> key is provided, it is appended as
+a string.  To vaguely emulate C<die> and provide a simple filename and line
+number, use the C<< failure->line_trace >> class method:
 
     failure::foo::bar->throw({
         msg => "Ouch!",
@@ -146,6 +145,40 @@ use the C<< failure->line_trace >> class method:
     # Failed: foo::bar error: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
+
+To provide a trace just like the L<Carp> module (including respecting C<@CARP_NOT>)
+use the C<croak_trace> or C<confess_trace> class methods.
+
+    failure::foo::bar->throw({
+        msg => "Ouch!",
+        trace => failure->croak_trace,
+    });
+
+    # Failed: foo::bar error: Ouch!
+    #
+    # Failure caught at <CALLING-FILENAME> line <NUMBER>
+
+    failure::foo::bar->throw({
+        msg => "Ouch!",
+        trace => failure->confess_trace,
+    });
+
+    # Failed: foo::bar error: Ouch!
+    #
+    # Failure caught at <FILENAME> line <NUMBER>
+    #   [confess stack trace continues]
+
+You can provide a C<trace> key with any object that overrides stringification,
+like L<Devel::StackTrace>:
+
+    failure::foo::bar->throw({
+        msg => "Ouch!",
+        trace => Devel::StackTrace->new,
+    });
+
+    # Failed: foo::bar error: Ouch!
+    #
+    # [stringified Devel::StackTrace object]
 
 =head2 Catching failures
 
