@@ -20,9 +20,25 @@ sub import {
 
 package failure;
 
+use overload (
+    q{""}    => \&as_string,
+    fallback => 1,
+);
+
 sub throw {
     my ($invocant) = @_;
     die( ref $invocant ? $invocant : bless( {}, $invocant ) );
+}
+
+sub message {
+    my ( $self, $type ) = @_;
+    return "Failed: $type error";
+}
+
+sub as_string {
+    my ($self) = @_;
+    ( my $class = ref $self ) =~ s/^failure:://;
+    return $self->message($class);
 }
 
 1;

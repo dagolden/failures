@@ -24,6 +24,13 @@ subtest 'throw nested failure' => sub {
     isa_ok( $err, $_ ) for qw/failure failure::human failure::human::arthur/;
 };
 
+subtest 'stringification' => sub {
+    my $err;
+    eval { failure::vogon::jeltz->throw };
+    ok( $err = $@, 'caught thrown error (no message)' );
+    is( "$err", "Failed: vogon::jeltz error", "stringification (no message)" );
+};
+
 done_testing;
 # COPYRIGHT
 # vim: ts=4 sts=4 sw=4 et:
