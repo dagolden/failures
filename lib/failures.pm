@@ -78,6 +78,12 @@ sub line_trace {
         elsif( $_->isa("failure::io") ) {
             ...
         }
+        elsif( $_->isa("failure") ) {
+            ...
+        }
+        else {
+            ...
+        }
     }
 
 =head1 DESCRIPTION
@@ -130,7 +136,7 @@ as a string.
     # [stringified Devel::StackTrace object]
 
 To vaguely emulate C<die> and provide a simple filename and line number,
-use the C<failure->line_trace> method:
+use the C<< failure->line_trace >> class method:
 
     failure::foo::bar->throw({
         msg => "Ouch!",
@@ -141,7 +147,7 @@ use the C<failure->line_trace> method:
     #
     # Failure caught at <FILENAME> line <NUMBER>
 
-=head2 Catching and failures
+=head2 Catching failures
 
 Use L<Try::Tiny>, of course.  Within a catch block, you know that C<$_>
 is defined, so you can test with C<isa>.
@@ -158,12 +164,13 @@ is defined, so you can test with C<isa>.
 There is no shortage of error/exception systems on CPAN.  This one is
 designed to be minimalist.
 
-Others you might (or might not) want to explore include:
+If you have more complex or substantial needs, you might (or might not) want to
+explore include:
 
 =for :list
 * L<Throwable::X> — for Moo/Moose classes
 * L<Exception::Class> -- for non-Moo/Moose classes
-* ...[more to come]...
+* … more to come …
 
 =cut
 
