@@ -133,9 +133,17 @@ With a single, non-hash-reference argument, the argument is appended as a string
     # Failed: foo::bar error: Ouch!
 
 With a hash reference argument, the C<msg> key provides the string to append to
-the default error.  If an optional C<trace> key is provided, it is appended as
-a string.  To vaguely emulate C<die> and provide a simple filename and line
-number, use the C<< failure->line_trace >> class method:
+the default error.  The hash reference is copied into the object, so any extra
+fields you provide will be in the object for use during handling:
+
+    failure::foo::bar->throw({
+        msg => "Ouch!",
+        notes => $extra_data,
+    });
+
+If an optional C<trace> key is provided, it is appended as a string.  To
+loosely emulate C<die> and provide a simple filename and line number, use the
+C<< failure->line_trace >> class method:
 
     failure::foo::bar->throw({
         msg => "Ouch!",
@@ -191,6 +199,26 @@ is defined, so you can test with C<isa>.
             # handle it
         }
     };
+
+=head2 Overriding failure class behavior (experimental)
+
+[This is theoretical and untested.]
+
+Because failure classes have an C<@ISA> chain, you can override behavior.
+
+    *failure::io::file::message = sub {
+        return sprintf( "Error %s '%s': %s", @{$_[0]{msg}} );
+    };
+
+    failure::io::file->throw( [ opening => $file => $! ] );
+    # Failed: io::file error: Error opening 'myfile.txt': No such file or directory
+
+If you do this, you should probably use your own hierarchy to avoid stepping on
+global behaviors:
+
+   use failures qw/MyApp::io::file/;
+
+In a future release, there may be more support for doing this with less work.
 
 =head1 SEE ALSO
 
