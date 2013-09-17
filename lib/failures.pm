@@ -9,6 +9,7 @@ package failures;
 sub import {
     my ( $class, @failures ) = @_;
     for my $f (@failures) {
+        # XXX should check $f for valid package name
         my $fragment = 'failure';
         for my $p ( split /::/, $f ) {
             no strict 'refs';
@@ -20,10 +21,7 @@ sub import {
 
 package failure;
 
-use overload (
-    q{""}    => \&as_string,
-    fallback => 1,
-);
+use overload ( q{""} => \&as_string, fallback => 1 );
 
 sub throw {
     my ( $class, $msg ) = @_;
@@ -31,29 +29,21 @@ sub throw {
     die( bless( $self, $class ) );
 }
 
-sub message {
-    my $msg = $_[0]->{msg};
-    return ( defined $msg && length $msg ? $msg : '' );
-}
+sub message { defined $_[0]{msg} ? $_[0]{msg} : '' }
 
-sub trace {
-    my $trace = $_[0]->{trace};
-    return ( defined $trace && length $trace ? $trace : '' );
-}
+sub trace { defined $_[0]{trace} ? $_[0]{trace} : '' }
 
 sub as_string {
     my ($self) = @_;
     ( my $type = ref $self ) =~ s/^failure:://;
-    my ( $string, $msg, $trace ) =
-      ( "Failed: $type error", $self->message, $self->trace );
-    $string .= ": $msg"     if length $msg;
-    $string .= "\n\n$trace" if length $trace;
-    $string .= "\n";
-    return $string;
+    my ( $str, $msg, $trc ) = ( "Failed: $type error", $self->message, $self->trace );
+    $str .= ": $msg"   if length $msg;
+    $str .= "\n\n$trc" if length $trc;
+    return $str .= "\n";
 }
 
 sub line_trace {
-    my ( $package, $filename, $line ) = caller(0);
+    my ( undef, $filename, $line ) = caller(0);
     return "Failure caught at $filename line $line.";
 }
 
