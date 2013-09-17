@@ -6,6 +6,21 @@ package failures;
 # ABSTRACT: No abstract given for failures
 # VERSION
 
+sub import {
+    my ( $class, @failures ) = @_;
+    for my $f (@failures) {
+        no strict 'refs';
+        @{"failure::$f\::ISA"} = 'failure';
+    }
+}
+
+package failure;
+
+sub throw {
+    my ($invocant) = @_;
+    my $obj = bless {}, ref $invocant || $invocant;
+    die $obj;
+}
 
 1;
 
