@@ -28,7 +28,7 @@ object behaviors.
 
 Because failure classes have an C<@ISA> chain and Perl by default uses
 depth-first-search to resolve method calls, you can override behavior anywhere
-in in the custom hierarchy and it will take precedence over default C<failure>
+in the custom hierarchy and it will take precedence over default C<failure>
 behaviors.
 
 There are two methods that might be useful to override:

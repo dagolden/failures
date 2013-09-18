@@ -227,14 +227,20 @@ So catching looks like this:
         }
     };
 
+If you need to rethrow the exception, just use C<die>:
+
+    elsif ( $_->$_isa("failure") ) {
+        die $_;
+    }
+
 =head2 Overriding failure class behavior
 
 See L<custom::failures>.
 
 =head1 SEE ALSO
 
-There is no shortage of error/exception systems on CPAN.  This one is
-designed to be minimalist.
+There are many error/exception systems on CPAN.  This one is designed to be
+minimalist.
 
 If you have more complex or substantial needs, people I know and trust
 seem to be recommending:
@@ -243,8 +249,8 @@ seem to be recommending:
 * L<Throwable> — exceptions as a Moo/Moose role
 * L<Throwable::X> — Throwable extended with extra goodies
 
-Here are some others that I found that weren't appropriate for my
-needs or didn't suit my taste:
+Here are other modules I found that weren't appropriate for my needs or didn't
+suit my taste:
 
 =for :list
 * L<Class::Throwable> — no hierarchy and always builds a full stack trace
@@ -255,7 +261,7 @@ needs or didn't suit my taste:
 * L<Exception::Tiny> — not bad, but always uses C<caller> and setting up a hierarchy requires extra work
 * L<Ouch> — simple, well-thought out, but no hierarchy; also cutesy function names
 
-Here are some more that I'm very dubious about:
+Here are some that I'm very dubious about:
 
 =for :list
 * L<Err> — alpha since 2012
