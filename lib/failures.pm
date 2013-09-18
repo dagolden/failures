@@ -19,11 +19,11 @@ sub import {
         # XXX should check $f for valid package name
         my $custom  = $caller;
         my $default = 'failure';
-        push @{"$custom\::ISA"}, $default if $class eq 'custom::failures';
+        push @{"$custom\::ISA"}, $default if $is_custom;
         for my $p ( split /::/, $f ) {
             push @{"$default\::$p\::ISA"}, $default;
             $default .= "::$p";
-            if ( $class eq 'custom::failures' ) {
+            if ($is_custom) {
                 push @{"$custom\::$p\::ISA"}, $custom, $default;
                 $custom .= "::$p";
             }
