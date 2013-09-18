@@ -7,7 +7,8 @@ package MyFailures;
 use custom::failures qw/io::file/;
 
 use Class::Tiny {
-    when => sub { time }
+    did_build => 0,
+    when      => sub { time },
 };
 
 sub message {
@@ -19,6 +20,11 @@ sub message {
 sub throw {
     my ( $self, $msg ) = @_;
     $self->SUPER::throw( { msg => $msg, payload => "Hello Payload" } );
+}
+
+sub BUILD {
+    my ($self) = @_;
+    $self->did_build(1);
 }
 
 package main;

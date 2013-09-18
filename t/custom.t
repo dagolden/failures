@@ -39,13 +39,14 @@ subtest 'custom hierarchy in custom namespace' => sub {
     }
 };
 
-subtest 'custom attributes, throw and message' => sub {
+subtest 'custom attributes and methods' => sub {
     my $err;
     my $now = time;
     eval { MyFailures::io::file->throw; };
     ok( $err = $@, 'caught thrown error' );
     ok( $err->when >= $now, "timestamp attribute populated" );
     is( $err->payload, "Hello Payload", "custom throw set payload" );
+    is( $err->did_build, 1, "BUILD set attribute" );
     is(
         $err->message(''),
         "Caught MyFailures::io::file error: (@{[$err->when]})",
