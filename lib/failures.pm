@@ -7,14 +7,20 @@ package failures;
 # VERSION
 
 sub import {
+    no strict 'refs';
     my ( $class, @failures ) = @_;
     for my $f (@failures) {
         # XXX should check $f for valid package name
-        my $fragment = 'failure';
+        my $custom  = caller . "::failure";
+        my $default = 'failure';
+        @{"$custom\::ISA"} = ($default) if $class eq 'custom::failures';
         for my $p ( split /::/, $f ) {
-            no strict 'refs';
-            @{"$fragment\::$p\::ISA"} = $fragment;
-            $fragment .= "::$p";
+            @{"$default\::$p\::ISA"} = ($default);
+            $default .= "::$p";
+            if ( $class eq 'custom::failures' ) {
+                @{"$custom\::$p\::ISA"} = ( $custom, $default );
+                $custom .= "::$p";
+            }
         }
     }
 }
@@ -49,6 +55,7 @@ sub line_trace {
 
 for my $fn (qw/croak_trace confess_trace/) {
     no strict 'refs';
+    no warnings 'once';
     *{$fn} = sub {
         require Carp;
         local @failure::CARP_NOT = ( scalar caller );
@@ -100,7 +107,7 @@ Here were my design goals:
 * identify errors types by name (class) not by parsing strings
 * leave (possibly expensive) trace decisions to the thrower
 
-Currently, C<failures> is implemented in under 50 lines of code.
+Currently, C<failures> is implemented in around 60 lines of code.
 
 =head1 USAGE
 
