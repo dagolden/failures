@@ -73,19 +73,20 @@ for my $fn (qw/croak_trace confess_trace/) {
 
     use failures qw/io::file io::network/;
     use Try::Tiny;
+    use Safe::Isa; # for $_isa
 
     try {
         process_file or
             failure::io::file->throw("oops, something bad happened: $!");
     }
     catch {
-        if   ( $_->isa("failure::io::file") ) {
+        if   ( $_->$_isa("failure::io::file") ) {
             ...
         }
-        elsif( $_->isa("failure::io") ) {
+        elsif( $_->$_isa("failure::io") ) {
             ...
         }
-        elsif( $_->isa("failure") ) {
+        elsif( $_->$_isa("failure") ) {
             ...
         }
         else {
@@ -200,11 +201,18 @@ like L<Devel::StackTrace>:
 =head2 Catching failures
 
 Use L<Try::Tiny>, of course.  Within a catch block, you know that C<$_>
-is defined, so you can test with C<isa>.
+is defined, but it still might be an unblessed reference or something that
+is risky to call C<isa> on.  If you load C<Safe::Isa>, you get a code
+reference in C<$_isa> that calls C<isa> only on objects.
+
+So catching looks like this:
+
+    use Try::Tiny;
+    use Safe::Isa;
 
     try { ... }
     catch {
-        if ( $_->isa("failure::foo") ) {
+        if ( $_->$_isa("failure::foo") ) {
             # handle it
         }
     };
