@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 package custom::failures;
-# ABSTRACT: Minimalist, but customized exception hierarchies
+# ABSTRACT: Minimalist, customized exception hierarchy generator
 # VERSION
 
 use parent 'failures';
