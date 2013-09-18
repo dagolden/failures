@@ -114,7 +114,7 @@ Here were my design goals:
 * identify errors types by name (class) not by parsing strings
 * leave (possibly expensive) trace decisions to the thrower
 
-Currently, C<failures> is implemented in around 70 lines of code.
+Currently, C<failures> is implemented in under 70 lines of code.
 
 Failure objects are implemented with L<Class::Tiny> to allow easy subclassing
 (see L<custom::failures>), but C<Class::Tiny> only requires core modules, so
@@ -126,16 +126,16 @@ other than that exception, the 'core only' goal is achieved.
 
     use failures qw/foo::bar foo::baz/;
 
-This will define the following failure classes:
+This will define the following classes in the C<failure> namespace:
 
 =for :list
-* failure
-* failure::foo
-* failure::foo::bar
-* failure::foo::baz
+* C<failure>
+* C<failure::foo>
+* C<failure::foo::bar>
+* C<failure::foo::baz>
 
-Subclasses inherit, so C<failure::foo::bar> C<isa> C<failure::foo> and C<isa>
-C<failure>.
+Subclasses inherit, so C<failure::foo::bar> is-a C<failure::foo> and
+C<failure::foo> is-a C<failure>.
 
 =head2 Throwing failures
 
@@ -145,12 +145,12 @@ that modifies how failure objects are stringified.
 If no argument is given, a default message is generated:
 
     say failure::foo::bar->throw;
-    # Failed: foo::bar error
+    # Caught failure::foo::bar error
 
 With a single, non-hash-reference argument, the argument is appended as a string:
 
     say failure::foo::bar->throw("Ouch!");
-    # Failed: foo::bar error: Ouch!
+    # Caught failure::foo::bar error: Ouch!
 
 With a hash reference argument, the C<msg> key provides the string to append to
 the default error.  If you have extra data to attach to the exception, use the
@@ -170,7 +170,7 @@ C<< failure->line_trace >> class method:
         trace => failure->line_trace,
     });
 
-    # Failed: foo::bar error: Ouch!
+    # Caught failure::foo::bar error: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
 
@@ -182,7 +182,7 @@ use the C<croak_trace> or C<confess_trace> class methods:
         trace => failure->croak_trace,
     });
 
-    # Failed: foo::bar error: Ouch!
+    # Caught failure::foo::bar error: Ouch!
     #
     # Failure caught at <CALLING-FILENAME> line <NUMBER>
 
@@ -191,7 +191,7 @@ use the C<croak_trace> or C<confess_trace> class methods:
         trace => failure->confess_trace,
     });
 
-    # Failed: foo::bar error: Ouch!
+    # Caught failure::foo::bar error: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
     #   [confess stack trace continues]
@@ -204,7 +204,7 @@ like L<Devel::StackTrace>:
         trace => Devel::StackTrace->new,
     });
 
-    # Failed: foo::bar error: Ouch!
+    # Caught failure::foo::bar error: Ouch!
     #
     # [stringified Devel::StackTrace object]
 
@@ -212,7 +212,7 @@ like L<Devel::StackTrace>:
 
 Use L<Try::Tiny>, of course.  Within a catch block, you know that C<$_>
 is defined, but it still might be an unblessed reference or something that
-is risky to call C<isa> on.  If you load C<Safe::Isa>, you get a code
+is risky to call C<isa> on.  If you load L<Safe::Isa>, you get a code
 reference in C<$_isa> that calls C<isa> only on objects.
 
 So catching looks like this:
