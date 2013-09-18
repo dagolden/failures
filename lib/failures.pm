@@ -33,6 +33,8 @@ sub import {
 
 package failure;
 
+use Class::Tiny { msg => '', trace => '', payload => undef };
+
 use overload ( q{""} => \&as_string, fallback => 1 );
 
 sub throw {
@@ -41,17 +43,16 @@ sub throw {
     die( bless( $self, $class ) );
 }
 
-sub message { defined $_[0]{msg} ? $_[0]{msg} : '' }
-
-sub trace { defined $_[0]{trace} ? $_[0]{trace} : '' }
+sub message {
+    my ( $self, $msg ) = @_;
+    my $intro = "Caught @{[ref $self]} error";
+    return length($msg) ? "$intro: $msg" : $intro;
+}
 
 sub as_string {
     my ($self) = @_;
-    ( my $type = ref $self ) =~ s/^failure:://;
-    my ( $str, $msg, $trc ) = ( "Failed: $type error", $self->message, $self->trace );
-    $str .= ": $msg"   if length $msg;
-    $str .= "\n\n$trc" if length $trc;
-    return $str .= "\n";
+    my ( $message, $trace ) = ( $self->message( $self->msg ), $self->trace );
+    return length($trace) ? "$message\n\n$trace\n" : "$message\n";
 }
 
 sub line_trace {
@@ -109,12 +110,16 @@ Here were my design goals:
 =for :list
 * minimalist interface
 * 80% of features in 20% of lines of code
-* depend only on core modules
+* depend only on core modules (nearly achieved)
 * support hierarchical error types
 * identify errors types by name (class) not by parsing strings
 * leave (possibly expensive) trace decisions to the thrower
 
-Currently, C<failures> is implemented in around 60 lines of code.
+Currently, C<failures> is implemented in around 70 lines of code.
+
+Failure objects are implemented with L<Class::Tiny> to allow easy subclassing
+(see L<custom::failures>), but C<Class::Tiny> only requires core modules, so
+other than that exception, the 'core only' goal is achieved.
 
 =head1 USAGE
 
@@ -149,12 +154,12 @@ With a single, non-hash-reference argument, the argument is appended as a string
     # Failed: foo::bar error: Ouch!
 
 With a hash reference argument, the C<msg> key provides the string to append to
-the default error.  The hash reference is copied into the object, so any extra
-fields you provide will be in the object for use during handling:
+the default error.  If you have extra data to attach to the exception, use the
+C<payload> key:
 
     failure::foo::bar->throw({
-        msg => "Ouch!",
-        notes => $extra_data,
+        msg     => "Ouch!",
+        payload => $extra_data,
     });
 
 If an optional C<trace> key is provided, it is appended as a string.  To
@@ -223,25 +228,9 @@ So catching looks like this:
         }
     };
 
-=head2 Overriding failure class behavior (experimental)
+=head2 Overriding failure class behavior
 
-[This is theoretical and untested.]
-
-Because failure classes have an C<@ISA> chain, you can override behavior.
-
-    *failure::io::file::message = sub {
-        return sprintf( "Error %s '%s': %s", @{$_[0]{msg}} );
-    };
-
-    failure::io::file->throw( [ opening => $file => $! ] );
-    # Failed: io::file error: Error opening 'myfile.txt': No such file or directory
-
-If you do this, you should probably use your own hierarchy to avoid stepping on
-global behaviors:
-
-   use failures qw/MyApp::io::file/;
-
-In a future release, there may be more support for doing this with less work.
+See L<custom::failures>.
 
 =head1 SEE ALSO
 

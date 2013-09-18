@@ -1,5 +1,7 @@
 requires "Carp" => "0";
+requires "Class::Tiny" => "0";
 requires "overload" => "0";
+requires "parent" => "0";
 requires "perl" => "5.008001";
 requires "strict" => "0";
 requires "warnings" => "0";
