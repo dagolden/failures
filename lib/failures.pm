@@ -66,8 +66,7 @@ for my $fn (qw/croak_trace confess_trace/) {
     *{$fn} = sub {
         require Carp;
         local @failure::CARP_NOT = ( scalar caller );
-        my $trace = $fn eq 'croak_trace' ? Carp::shortmess('') : Carp::longmess('');
-        chomp $trace;
+        chomp( my $trace = $fn eq 'croak_trace' ? Carp::shortmess('') : Carp::longmess('') );
         return "Failure caught$trace";
     };
 }
