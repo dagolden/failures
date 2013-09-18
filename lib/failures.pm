@@ -88,7 +88,7 @@ for my $fn (qw/croak_trace confess_trace/) {
 
 =head1 DESCRIPTION
 
-This module lets you define an exception hierarchy with very little code.
+This module lets you define an exception hierarchy quickly and simply.
 
 Here were my design goals:
 
@@ -98,7 +98,9 @@ Here were my design goals:
 * depend only on core modules
 * support hierarchical error types
 * identify errors types by name (class) not by parsing strings
-* defer (possibly expensive) trace decisions to caller
+* leave (possibly expensive) trace decisions to the thrower
+
+Currently, C<failures> is implemented in under 50 lines of code.
 
 =head1 USAGE
 
