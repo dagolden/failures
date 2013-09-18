@@ -169,6 +169,22 @@ Later you could use it like this:
 
     MyApp::failure::file->throw( opening => $some_file );
 
+=head2 Using BUILD
+
+C<Class::Tiny> supports C<BUILD>, so you can also use that to
+do things with failure objects when thrown.  This example
+logs exceptions as they are built:
+
+    use Log::Any qw/$log/;
+
+    sub BUILD {
+        my ($self) = @_;
+        $log->error( $self->message );
+    }
+
+By using C<message> instead of stringifying C<$self>, we
+log the message but not the trace (if any).
+
 =cut
 
 # vim: ts=4 sts=4 sw=4 et:
