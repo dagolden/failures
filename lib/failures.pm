@@ -225,12 +225,12 @@ In a future release, there may be more support for doing this with less work.
 There is no shortage of error/exception systems on CPAN.  This one is
 designed to be minimalist.
 
-If you have more complex or substantial needs, these modules are the ones
-that I know have a good reputation:
+If you have more complex or substantial needs, people I know and trust
+seem to be recommending:
 
 =for :list
-* L<Throwable::X> — for Moo/Moose classes
-* L<Exception::Class> -- for non-Moo/Moose classes
+* L<Throwable> — exceptions as a Moo/Moose role
+* L<Throwable::X> — Throwable extended with extra goodies
 
 Here are some others that I found that weren't appropriate for my
 needs or didn't suit my taste:
@@ -238,7 +238,8 @@ needs or didn't suit my taste:
 =for :list
 * L<Class::Throwable> — no hierarchy and always builds a full stack trace
 * L<Error::Tiny> — blends Try::Tiny and a trivial exception base class
-* L<Exception::Base> — seemed a bit complex, but highly optimized for speed
+* L<Exception::Base> — complexity on par with Exception::Class, but highly optimized for speed
+* L<Exception::Class> — once highly recommended, but even the author now suggests Throwable
 * L<Exception::Simple> — very simple, but always uses C<caller> and has no hierarchy
 * L<Exception::Tiny> — not bad, but always uses C<caller> and setting up a hierarchy requires extra work
 * L<Ouch> — simple, well-thought out, but no hierarchy; also cutesy function names
