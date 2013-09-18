@@ -57,9 +57,14 @@ subtest 'trace' => sub {
     eval { failure::vogon::jeltz->throw( { trace => 'STACK TRACE' } ) };
     ok( $err = $@, 'caught thrown error (with trace)' );
     is(
+        $err->message,
+        "Caught failure::vogon::jeltz error",
+        "message method has no trace"
+    );
+    is(
         "$err",
         "Caught failure::vogon::jeltz error\n\nSTACK TRACE\n",
-        "stringification with (fake) stack trace"
+        "stringification has stack trace"
     );
 
     eval { failure::vogon::jeltz->throw( { trace => failure->line_trace } ) };
