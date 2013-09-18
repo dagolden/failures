@@ -39,8 +39,8 @@ use overload ( q{""} => \&as_string, fallback => 1 );
 
 sub throw {
     my ( $class, $msg ) = @_;
-    my $self = ref $msg eq 'HASH' ? {%$msg} : { msg => $msg };
-    die( bless( $self, $class ) );
+    my $m = ref $msg eq 'HASH' ? $msg : { msg => $msg };
+    die $class->new( map { defined $m->{$_} ? ( $_ => $m->{$_} ) : () } keys %$m );
 }
 
 sub message {
