@@ -6,4 +6,6 @@ package MyFailures;
 
 use custom::failures qw/io::file/;
 
+use custom::failures 'Other::Failure' => [qw/io::file/];
+
 1;

@@ -9,16 +9,22 @@ package failures;
 sub import {
     no strict 'refs';
     my ( $class, @failures ) = @_;
+    my $caller    = caller;
+    my $is_custom = $class eq 'custom::failures';
+    if ( $is_custom && ref $failures[1] eq 'ARRAY' ) {
+        $caller   = shift @failures;
+        @failures = @{ $failures[0] };
+    }
     for my $f (@failures) {
         # XXX should check $f for valid package name
-        my $custom  = caller . "::failure";
+        my $custom  = $caller;
         my $default = 'failure';
-        @{"$custom\::ISA"} = ($default) if $class eq 'custom::failures';
+        push @{"$custom\::ISA"}, $default if $class eq 'custom::failures';
         for my $p ( split /::/, $f ) {
-            @{"$default\::$p\::ISA"} = ($default);
+            push @{"$default\::$p\::ISA"}, $default;
             $default .= "::$p";
             if ( $class eq 'custom::failures' ) {
-                @{"$custom\::$p\::ISA"} = ( $custom, $default );
+                push @{"$custom\::$p\::ISA"}, $custom, $default;
                 $custom .= "::$p";
             }
         }

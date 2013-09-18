@@ -10,16 +10,33 @@ use lib 't/lib';
 use MyFailures;
 
 subtest 'custom hierarchy' => sub {
-    my @parts = qw/MyFailures failure io file/;
-    while (@parts) {
-        my $class   = join( "::", @parts );
-        my $last    = pop @parts;
-        my $parent  = join( "::", @parts );
-        my $sibling = join( "::", @parts[ 1 .. $#parts ], $last );
-        isa_ok( $class, $parent,  $class ) if $parent =~ /failure/;
-        isa_ok( $class, $sibling, $class ) if $sibling =~ /failure/;
+    no strict 'refs';
+    for ("MyFailures::io::file") {
+        isa_ok( $_, "MyFailures::io",    $_ ) or diag explain \@{"$_\::ISA"};
+        isa_ok( $_, "failure::io::file", $_ ) or diag explain \@{"$_\::ISA"};
     }
+    for ("MyFailures::io") {
+        isa_ok( $_, "MyFailures",  $_ ) or diag explain \@{"$_\::ISA"};
+        isa_ok( $_, "failure::io", $_ ) or diag explain \@{"$_\::ISA"};
+    }
+    for ("MyFailures") {
+        isa_ok( $_, "failure", $_ ) or diag explain \@{"$_\::ISA"};
+    }
+};
 
+subtest 'custom hierarchy in custom namespace' => sub {
+    no strict 'refs';
+    for ("Other::Failure::io::file") {
+        isa_ok( $_, "Other::Failure::io", $_ ) or diag explain \@{"$_\::ISA"};
+        isa_ok( $_, "failure::io::file",  $_ ) or diag explain \@{"$_\::ISA"};
+    }
+    for ("Other::Failure::io") {
+        isa_ok( $_, "Other::Failure", $_ ) or diag explain \@{"$_\::ISA"};
+        isa_ok( $_, "failure::io",    $_ ) or diag explain \@{"$_\::ISA"};
+    }
+    for ("Other::Failure") {
+        isa_ok( $_, "failure", $_ ) or diag explain \@{"$_\::ISA"};
+    }
 };
 
 ##subtest 'stringification' => sub {
