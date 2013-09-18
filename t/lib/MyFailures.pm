@@ -16,6 +16,11 @@ sub message {
     return $self->SUPER::message( length($msg) ? "$when $msg" : $when );
 }
 
+sub throw {
+    my ( $self, $msg ) = @_;
+    $self->SUPER::throw( { msg => $msg, payload => "Hello Payload" } );
+}
+
 package main;
 
 use custom::failures 'Other::Failure' => [qw/io::file/];
