@@ -87,6 +87,16 @@ subtest 'trace' => sub {
     );
 };
 
+subtest 'payload' => sub {
+    my $err;
+    my $payload = { foo => 'bar' };
+    eval {
+        failure::vogon::jeltz->throw( { msg => "bypass over budget", payload => $payload } );
+    };
+    ok( $err = $@, 'caught thrown error' );
+    is_deeply( $err->payload, $payload, "payload is correct" );
+};
+
 done_testing;
 # COPYRIGHT
 # vim: ts=4 sts=4 sw=4 et:
