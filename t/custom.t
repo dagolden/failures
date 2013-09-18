@@ -39,28 +39,14 @@ subtest 'custom hierarchy in custom namespace' => sub {
     }
 };
 
-##subtest 'stringification' => sub {
-##    my $err;
-##    eval { failure::vogon::jeltz->throw };
-##    ok( $err = $@, 'caught thrown error (no message)' );
-##    is( "$err", "Failed: vogon::jeltz error\n", "stringification (no message)" );
-##
-##    eval { failure::vogon::jeltz->throw("bypass over budget") };
-##    ok( $err = $@, 'caught thrown error (string message)' );
-##    is(
-##        "$err",
-##        "Failed: vogon::jeltz error: bypass over budget\n",
-##        "stringification (string message)"
-##    );
-##
-##    eval { failure::vogon::jeltz->throw( { msg => "bypass over budget" } ) };
-##    ok( $err = $@, 'caught thrown error (message in hashref)' );
-##    is(
-##        "$err",
-##        "Failed: vogon::jeltz error: bypass over budget\n",
-##        "stringification (message in hashref)"
-##    );
-##};
+subtest 'custom attributes and message' => sub {
+    my $err;
+    my $now = time;
+    eval { MyFailures::io::file->throw; };
+    ok( $err = $@, 'caught thrown error' );
+    ok( $err->when >= $now, "timestamp attribute populated" );
+    is( $err->message(''), "Caught MyFailures::io::file error: (@{[$err->when]})" );
+};
 
 done_testing;
 # COPYRIGHT
