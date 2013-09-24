@@ -46,7 +46,7 @@ sub throw {
 sub message {
     my ( $self, $msg ) = @_;
     my $intro = "Caught @{[ref $self]} error";
-    return length($msg) ? "$intro: $msg" : $intro;
+    return defined($msg) && length($msg) ? "$intro: $msg" : $intro;
 }
 
 sub as_string {
