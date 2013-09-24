@@ -71,7 +71,7 @@ subtest 'trace' => sub {
     ok( $err = $@, 'caught thrown error (with line trace)' );
     like(
         "$err",
-        qr/Caught failure::vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+\.\n/,
+        qr/Caught failure::vogon::jeltz error\n\nFailure caught at t\/basic\.t line \d+\.?\n/,
         "stringification with line trace"
     );
 
@@ -79,7 +79,7 @@ subtest 'trace' => sub {
     ok( $err = $@, 'caught thrown error (with croak trace)' );
     like(
         "$err",
-        qr/Caught failure::vogon::jeltz error: Ouch!\n\nFailure caught at t\/basic\.t line \d+\.\n/,
+        qr/Caught failure::vogon::jeltz error: Ouch!\n\nFailure caught at t\/basic\.t line \d+\.?\n/,
         "stringification with croak trace"
     );
 
@@ -87,7 +87,7 @@ subtest 'trace' => sub {
     ok( $err = $@, 'caught thrown error (with confess trace)' );
     like(
         "$err",
-        qr/Caught failure::vogon::jeltz error: Ouch!\n\nFailure caught at t\/lib\/TestThrower\.pm line \d+\.\n\s+Baz::baz/,
+        qr/Caught failure::vogon::jeltz error: Ouch!\n\nFailure caught at t\/lib\/TestThrower\.pm line \d+\.?\n\s+Baz::baz/,
         "stringification with croak trace"
     );
 };
