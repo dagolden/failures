@@ -112,7 +112,7 @@ returns a string.  It should not produce or append stack trace information.
 That is done during object stringification.
 
 Call C<SUPER::message> if you want the standard error text prepended (C<"Caught
-$class error: ...">).
+$class: ...">).
 
 For example, if you want to use L<String::Flogger> to render messages:
 

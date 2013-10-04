@@ -45,7 +45,7 @@ sub throw {
 
 sub message {
     my ( $self, $msg ) = @_;
-    my $intro = "Caught @{[ref $self]} error";
+    my $intro = "Caught @{[ref $self]}";
     return defined($msg) && length($msg) ? "$intro: $msg" : $intro;
 }
 
@@ -145,12 +145,12 @@ that modifies how failure objects are stringified.
 If no argument is given, a default message is generated:
 
     say failure::foo::bar->throw;
-    # Caught failure::foo::bar error
+    # Caught failure::foo::bar
 
 With a single, non-hash-reference argument, the argument is appended as a string:
 
     say failure::foo::bar->throw("Ouch!");
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
 
 With a hash reference argument, the C<msg> key provides the string to append to
 the default error.  If you have extra data to attach to the exception, use the
@@ -170,7 +170,7 @@ C<< failure->line_trace >> class method:
         trace => failure->line_trace,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
 
@@ -182,7 +182,7 @@ use the C<croak_trace> or C<confess_trace> class methods:
         trace => failure->croak_trace,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # Failure caught at <CALLING-FILENAME> line <NUMBER>
 
@@ -191,7 +191,7 @@ use the C<croak_trace> or C<confess_trace> class methods:
         trace => failure->confess_trace,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # Failure caught at <FILENAME> line <NUMBER>
     #   [confess stack trace continues]
@@ -204,7 +204,7 @@ like L<Devel::StackTrace>:
         trace => Devel::StackTrace->new,
     });
 
-    # Caught failure::foo::bar error: Ouch!
+    # Caught failure::foo::bar: Ouch!
     #
     # [stringified Devel::StackTrace object]
 

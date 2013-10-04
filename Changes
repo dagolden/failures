@@ -2,6 +2,11 @@ Revision history for failures
 
 {{$NEXT}}
 
+    [CHANGES]
+
+    - Revised default error message slightly ("Caught $class error"
+      to "Caught $class")
+
 0.002     2013-09-24 12:53:37 America/New_York
 
     [FIXED]

@@ -49,7 +49,7 @@ subtest 'custom attributes and methods' => sub {
     is( $err->did_build, 1, "BUILD set attribute" );
     is(
         $err->message(''),
-        "Caught MyFailures::io::file error: (@{[$err->when]})",
+        "Caught MyFailures::io::file: (@{[$err->when]})",
         "custom message added attribute to string"
     );
 };
