@@ -2,6 +2,8 @@ Revision history for failures
 
 {{$NEXT}}
 
+0.003     2014-01-07 12:21:20 America/New_York
+
     [CHANGES]
 
     - Revised default error message slightly ("Caught $class error"
