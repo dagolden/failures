@@ -169,7 +169,7 @@ C<payload> key:
     });
 
 If an optional C<trace> key is provided, it is appended if the object is
-strintified.  To loosely emulate C<die> and provide a simple filename and line
+stringified.  To loosely emulate C<die> and provide a simple filename and line
 number, use the C<< failure->line_trace >> class method:
 
     failure::foo::bar->throw({
