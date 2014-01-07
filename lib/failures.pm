@@ -234,6 +234,12 @@ So catching looks like this:
         }
     };
 
+To extract the message just use the msg access.
+
+    if ( $_->$_isa("failure::foo") ) {
+        print $_->msg;
+    }
+
 If you need to rethrow the exception, just use C<die>:
 
     elsif ( $_->$_isa("failure") ) {
