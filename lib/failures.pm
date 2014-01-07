@@ -137,17 +137,24 @@ This will define the following classes in the C<failure> namespace:
 Subclasses inherit, so C<failure::foo::bar> is-a C<failure::foo> and
 C<failure::foo> is-a C<failure>.
 
+=head2 Attributes
+
+A failure class has three attributes: C<msg>, C<payload>, and C<trace>.  Their
+usage is described below.  Accessors exist for all three.
+
 =head2 Throwing failures
 
 The C<throw> method of a failure class takes a single, optional argument
 that modifies how failure objects are stringified.
 
-If no argument is given, a default message is generated:
+If no argument is given, a default message is generated if the object
+is stringified:
 
     say failure::foo::bar->throw;
     # Caught failure::foo::bar
 
-With a single, non-hash-reference argument, the argument is appended as a string:
+With a single, non-hash-reference argument, the argument is used for the C<msg>
+attribute and is appended if the object is stringified.
 
     say failure::foo::bar->throw("Ouch!");
     # Caught failure::foo::bar: Ouch!
@@ -161,9 +168,9 @@ C<payload> key:
         payload => $extra_data,
     });
 
-If an optional C<trace> key is provided, it is appended as a string.  To
-loosely emulate C<die> and provide a simple filename and line number, use the
-C<< failure->line_trace >> class method:
+If an optional C<trace> key is provided, it is appended if the object is
+strintified.  To loosely emulate C<die> and provide a simple filename and line
+number, use the C<< failure->line_trace >> class method:
 
     failure::foo::bar->throw({
         msg => "Ouch!",

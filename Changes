@@ -7,6 +7,8 @@ Revision history for failures
     - Revised default error message slightly ("Caught $class error"
       to "Caught $class")
 
+    - Documented attributes and stringification better
+
 0.002     2013-09-24 12:53:37 America/New_York
 
     [FIXED]
