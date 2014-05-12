@@ -61,7 +61,7 @@ denote 'is-a' relationships):
 
 Alternatively, if you want a different namespace for the hierarchy, do it this way:
 
-    use custom::failures 'MyApp::Error' => [ 'io::file' ];
+    use custom::failures 'MyApp::Error' => [ 'foo::bar' ];
 
 That will create the following classes and relationships:
 
@@ -76,6 +76,7 @@ That will create the following classes and relationships:
 By having custom classes also inherit from a standard namespace, you can throw
 a custom error class that will still be caught in the standard namespace:
 
+    use Safe::Isa; # for $_isa
     try {
         MyApp::failure::foo::bar->throw;
     }
