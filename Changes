@@ -2,6 +2,10 @@ Revision history for failures
 
 {{$NEXT}}
 
+    [DOCUMENTATION]
+
+    - Updated documentation for custom failure classes
+
 0.003     2014-01-07 12:21:20 America/New_York
 
     [CHANGES]
